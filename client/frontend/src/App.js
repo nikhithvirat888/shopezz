@@ -1,150 +1,244 @@
+```jsx
 import { useEffect, useState } from "react";
 import axios from "axios";
-import Login from "./Login";
 
 function App() {
-  const [user, setUser] = useState(null);
   const [products, setProducts] = useState([]);
   const [cart, setCart] = useState([]);
-
-  const [search, setSearch] = useState("");
-  const [category, setCategory] = useState("All");
-
-  const [showCart, setShowCart] = useState(false);
-  const [showCheckout, setShowCheckout] = useState(false);
-
-  const [address, setAddress] = useState({
-    name: "",
-    mobile: "",
-    city: "",
-    address: "",
-  });
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
-    const saved = localStorage.getItem("user");
-    if (saved) setUser(JSON.parse(saved));
+    axios
+      .get("http://localhost:5000/api/products")
+      .then((res) => setProducts(res.data))
+      .catch((err) => console.log(err));
   }, []);
 
-  useEffect(() => {
-    axios.get("http://localhost:5000/api/products")
-      .then(res => setProducts(res.data));
-  }, []);
+  const login = () => {
+    const email = prompt("Enter Email");
+    const password = prompt("Enter Password");
 
-  const login = (data) => {
-    setUser(data);
-    localStorage.setItem("user", JSON.stringify(data));
+    axios
+      .post("http://localhost:5000/api/auth/login", {
+        email,
+        password,
+      })
+      .then((res) => {
+        setUser(res.data.user);
+        alert("Login Successful");
+      })
+      .catch(() => alert("Invalid Login"));
   };
 
   const logout = () => {
-    localStorage.clear();
     setUser(null);
-  };
-
-  const addToCart = (p) => setCart([...cart, p]);
-
-  const remove = (i) => {
-    const temp = [...cart];
-    temp.splice(i, 1);
-    setCart(temp);
-  };
-
-  const total = cart.reduce((a, b) => a + b.price, 0);
-
-  const placeOrder = async () => {
-    await axios.post("http://localhost:5000/api/orders", {
-      user,
-      items: cart,
-      address,
-      total,
-    });
-
-    alert("Order Placed!");
     setCart([]);
-    setShowCheckout(false);
-    setShowCart(false);
   };
 
-  if (!user) return <Login onLogin={login} />;
+  const addToCart = (item) => {
+    if (!user) {
+      alert("Please login first");
+      return;
+    }
+
+    setCart([...cart, item]);
+  };
+
+  const removeFromCart = (index) => {
+    const newCart = [...cart];
+    newCart.splice(index, 1);
+    setCart(newCart);
+  };
+
+  const buyNow = (item) => {
+    if (!user) {
+      alert("Please login first");
+      return;
+    }
+
+    const address = prompt("Enter Delivery Address");
+
+    if (!address) {
+      alert("Address is required");
+      return;
+    }
+
+    alert("Order Placed Successfully!");
+  };
 
   return (
-    <div>
+    <div style={{ background: "#f1f3f6", minHeight: "100vh" }}>
+      {/* NAVBAR */}
+      <div
+        style={{
+          background: "#2874f0",
+          color: "white",
+          padding: "15px 30px",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <h2>SHOPEZ 🛒</h2>
 
-      {/* HEADER */}
-      <div style={{ display: "flex", justifyContent: "space-between", background: "#2874f0", color: "white", padding: 10 }}>
-        <h2>SHOPEZ</h2>
+        <div style={{ display: "flex", gap: "15px" }}>
+          <button
+            style={{
+              padding: "8px 15px",
+              border: "none",
+              cursor: "pointer",
+            }}
+          >
+            Cart ({cart.length})
+          </button>
 
-        <input placeholder="Search" onChange={(e) => setSearch(e.target.value)} />
-
-        <select onChange={(e) => setCategory(e.target.value)}>
-          <option value="All">All</option>
-          <option value="Mobiles">Mobiles</option>
-          <option value="Fashion">Fashion</option>
-          <option value="Gadgets">Gadgets</option>
-          <option value="Watches">Watches</option>
-          <option value="Laptops">Laptops</option>
-          <option value="Gaming">Gaming</option>
-        </select>
-
-        <button onClick={() => setShowCart(!showCart)}>Cart ({cart.length})</button>
-        <button onClick={logout}>Logout</button>
-      </div>
-
-      {/* CART */}
-      {showCart ? (
-        <div>
-          <h2>Cart</h2>
-
-          {cart.map((c, i) => (
-            <div key={i}>
-              <h3>{c.name}</h3>
-              <button onClick={() => remove(i)}>Remove</button>
-            </div>
-          ))}
-
-          <h3>Total: ₹{total}</h3>
-
-          {cart.length > 0 && (
-            <button onClick={() => setShowCheckout(true)}>
-              Buy Now
+          {user ? (
+            <button
+              onClick={logout}
+              style={{
+                padding: "8px 15px",
+                border: "none",
+                cursor: "pointer",
+              }}
+            >
+              Logout
+            </button>
+          ) : (
+            <button
+              onClick={login}
+              style={{
+                padding: "8px 15px",
+                border: "none",
+                cursor: "pointer",
+              }}
+            >
+              Login
             </button>
           )}
         </div>
-      ) : showCheckout ? (
+      </div>
 
-        /* CHECKOUT */
-        <div>
-          <h2>Checkout</h2>
+      {/* PRODUCTS */}
+      <div
+        style={{
+          display: "flex",
+          flexWrap: "wrap",
+          gap: "20px",
+          padding: "20px",
+          justifyContent: "center",
+        }}
+      >
+        {products.map((p) => (
+          <div
+            key={p._id}
+            style={{
+              background: "white",
+              borderRadius: "10px",
+              padding: "15px",
+              width: "250px",
+              boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
+            }}
+          >
+            <img
+              src={p.image}
+              alt={p.name}
+              style={{
+                width: "100%",
+                height: "180px",
+                objectFit: "cover",
+                borderRadius: "5px",
+              }}
+            />
 
-          <input placeholder="Name" onChange={(e) => setAddress({ ...address, name: e.target.value })} />
-          <input placeholder="Mobile" onChange={(e) => setAddress({ ...address, mobile: e.target.value })} />
-          <input placeholder="City" onChange={(e) => setAddress({ ...address, city: e.target.value })} />
-          <textarea placeholder="Address" onChange={(e) => setAddress({ ...address, address: e.target.value })} />
+            <h3>{p.name}</h3>
 
-          <h3>Total: ₹{total}</h3>
+            <p
+              style={{
+                color: "#2874f0",
+                fontWeight: "bold",
+                fontSize: "20px",
+              }}
+            >
+              ₹{p.price}
+            </p>
 
-          <button onClick={placeOrder}>Place Order</button>
-        </div>
+            <button
+              onClick={() => addToCart(p)}
+              style={{
+                background: "#2874f0",
+                color: "white",
+                border: "none",
+                padding: "10px",
+                marginRight: "10px",
+                cursor: "pointer",
+              }}
+            >
+              Add To Cart
+            </button>
 
-      ) : (
+            <button
+              onClick={() => buyNow(p)}
+              style={{
+                background: "green",
+                color: "white",
+                border: "none",
+                padding: "10px",
+                cursor: "pointer",
+              }}
+            >
+              Buy Now
+            </button>
+          </div>
+        ))}
+      </div>
 
-        /* PRODUCTS */
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 20 }}>
-          {products
-            .filter(p => category === "All" ? true : p.category === category)
-            .filter(p => p.name.toLowerCase().includes(search.toLowerCase()))
-            .map(p => (
-              <div key={p._id}>
-                <img src={p.image} width="100%" height="150" />
-                <h3>{p.name}</h3>
-                <p>₹{p.price}</p>
-                <button onClick={() => addToCart(p)}>Add</button>
-              </div>
-            ))}
-        </div>
-      )}
+      {/* CART */}
+      <div
+        style={{
+          background: "white",
+          margin: "20px",
+          padding: "20px",
+          borderRadius: "10px",
+        }}
+      >
+        <h2>🛒 Shopping Cart ({cart.length})</h2>
 
+        {cart.length === 0 ? (
+          <p>Cart is empty</p>
+        ) : (
+          cart.map((item, index) => (
+            <div
+              key={index}
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                padding: "10px",
+                borderBottom: "1px solid #ddd",
+              }}
+            >
+              <span>
+                {item.name} - ₹{item.price}
+              </span>
+
+              <button
+                onClick={() => removeFromCart(index)}
+                style={{
+                  background: "red",
+                  color: "white",
+                  border: "none",
+                  padding: "5px 10px",
+                  cursor: "pointer",
+                }}
+              >
+                Remove
+              </button>
+            </div>
+          ))
+        )}
+      </div>
     </div>
   );
 }
 
 export default App;
+```
