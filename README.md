@@ -1,10 +1,10 @@
-# SHOPEZY 🛒
+SHOPEZY 🛒
 
 A full-stack MERN (MongoDB, Express.js, React.js, Node.js) e-commerce web application built for learning and development purposes.
 
 ---
 
-## 📌 Overview
+Overview
 
 SHOPEZY is an online shopping platform that allows users to browse products, search and filter items by category, manage a shopping cart, and securely authenticate using login and registration features.
 
@@ -12,7 +12,7 @@ The application is built using the MERN stack and follows a client-server archit
 
 ---
 
-## ✨ Features
+Features
 
 - User Registration & Login
 - Product Listing with Images
@@ -26,7 +26,7 @@ The application is built using the MERN stack and follows a client-server archit
 
 ---
 
-## 📁 Project Structure
+Project Structure
 
 ```text
 SHOPEZY/
@@ -49,42 +49,42 @@ SHOPEZY/
 
 ---
 
-## 🛠 Technologies Used
+Technologies Used
 
-### Frontend
+Frontend
 - React.js
 - Axios
 - JavaScript
 - HTML5
 - CSS3
 
-### Backend
+Backend
 - Node.js
 - Express.js
 - MongoDB
 - Mongoose
 
-### Tools
+Tools
 - Git
 - GitHub
-- Visual Studio Code
+
 
 ---
 
-## ⚙ Installation
+Installation
 
-### Clone the Repository
+Clone the Repository
 ```bash
 git clone <repository-url>
 ```
 
-### Install Frontend Dependencies
+Install Frontend Dependencies
 ```bash
 cd client
 npm install
 ```
 
-### Install Backend Dependencies
+Install Backend Dependencies
 ```bash
 cd ../server
 npm install
@@ -92,7 +92,7 @@ npm install
 
 ---
 
-## 🔐 Environment Variables
+Environment Variables
 
 Create a `.env` file inside the `server` folder:
 
@@ -103,15 +103,15 @@ PORT=5000
 
 ---
 
-## 🚀 Run the Application
+Run the Application
 
-### Start Backend
+Start Backend
 ```bash
 cd server
 node server.js
 ```
 
-### Start Frontend
+Start Frontend
 ```bash
 cd client
 npm start
@@ -119,7 +119,7 @@ npm start
 
 ---
 
-## 🌐 Application URLs
+Application URLs
 
 ```text
 Frontend: http://localhost:3000
@@ -128,7 +128,7 @@ Backend:  http://localhost:5000
 
 ---
 
-## 📌 Important Notes
+Important Notes
 
 - `.env` is excluded using `.gitignore`
 - `node_modules` is not pushed to GitHub
@@ -139,7 +139,7 @@ Backend:  http://localhost:5000
 
 ---
 
-## 🚀 Future Enhancements
+Future Enhancements
 
 - Product Details Page
 - Checkout System
@@ -150,12 +150,12 @@ Backend:  http://localhost:5000
 
 ---
 
-## 👨‍💻 Author
+Author
 
 **Bejjanki Nikhith**
 
 ---
 
-## 📄 License
+License
 
 This project is created for educational and learning purposes.
