@@ -152,7 +152,7 @@ Future Enhancements
 
 Author
 
-**Bejjanki Nikhith**
+Bejjanki Nikhith
 
 ---
 
